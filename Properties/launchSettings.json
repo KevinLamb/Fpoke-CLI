@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FpokeCLI": {
+      "commandName": "Project",
+      "commandLineArgs": "https://google.com"
+    }
+  }
+}

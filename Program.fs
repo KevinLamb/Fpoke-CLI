@@ -1,6 +1,4 @@
-﻿// Learn more about F# at http://fsharp.org
-
-open System
+﻿open System
 open FSharp.Data
 
 let getStatus url = 
@@ -11,15 +9,16 @@ let getStatus url =
     | :? System.Net.WebException as ex -> None
 
 [<EntryPoint>]
-let main argv =
-    printfn "Input url to check status of:"
-    let url = Console.ReadLine()
+let main arg =
 
-    let status = getStatus url
-
-    match status.IsSome with
-    | true -> printfn "HTTP Status: %A" status.Value
-    | _ -> printfn "An error occurred while getting status..."
-
-    let line = Console.ReadLine()
+    match arg with 
+    | [|first|] -> 
+        let status = getStatus first
+        match status.Value with
+        | 200 -> printfn "The site is UP! HTTP Status: %i" status.Value
+        | 404 -> printfn "Site is not found or page is down... HTTP Status: %i" status.Value
+        | 500 -> printfn "SERVER ERROR: Site is DOWN! HTTP Status: %i" status.Value
+        | _ -> printfn "An error occurred while getting status..."
+    | _ -> printfn "How to use: \"FpokeCLI url\""
+    
     0 // return an integer exit code

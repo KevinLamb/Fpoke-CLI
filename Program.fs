@@ -19,6 +19,6 @@ let main arg =
         | 404 -> printfn "Site is not found or page is down... HTTP Status: %i" status.Value
         | 500 -> printfn "SERVER ERROR: Site is DOWN! HTTP Status: %i" status.Value
         | _ -> printfn "An error occurred while getting status..."
-    | _ -> printfn "How to use: \"FpokeCLI url\""
+    | _ -> printfn "How to use: \"fpoke http://your-url.com\""
     
-    0 // return an integer exit code
+    0 

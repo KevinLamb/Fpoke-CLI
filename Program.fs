@@ -10,7 +10,7 @@ let getStatus url =
     try
         let response = Http.Request(url, silentHttpErrors = true)
         Some response.StatusCode
-    with :? System.Net.WebException as ex -> None
+    with :? System.Net.WebException as ex -> printfn "There was an error creating the request: %s!" ex.Message; None
 
 [<EntryPoint>]
 let main arg =
@@ -23,10 +23,10 @@ let main arg =
         match statusCode with
         | Some status -> 
                     match status with
-                        | s when List.contains s goodCodes = true -> printfn "The site is UP! HTTP Status: %i" status
-                        | s when List.contains s okCodes = true -> printfn "The site is UP! HTTP Status: %i" status
-                        | s when List.contains s clientErrorCodes = true -> printfn "Site is not found or page is down... HTTP Status: %i" status
-                        | s when List.contains s serverErrorCodes = true -> printfn "SERVER ERROR: Site is DOWN! HTTP Status: %i" status
+                        | s when List.contains s goodCodes = true -> printfn "The site is UP! \r\nHTTP Status: %i" status
+                        | s when List.contains s okCodes = true -> printfn "The site is UP! \r\nHTTP Status: %i" status
+                        | s when List.contains s clientErrorCodes = true -> printfn "Page is not found or page is down... \r\nHTTP Status: %i" status
+                        | s when List.contains s serverErrorCodes = true -> printfn "SERVER ERROR: Site is DOWN! \r\nHTTP Status: %i" status
                         | _ -> printfn "An error occurred while getting status..."
         | None -> printfn "How to use: \"fpoke http://your-url.com\""
         

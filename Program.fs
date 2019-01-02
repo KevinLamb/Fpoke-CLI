@@ -1,17 +1,10 @@
 ﻿open System
-open FSharp.Data
-
+open Fpoke.Modules.Poke
 let infoCodes = [100 .. 199]
 let goodCodes = [200 .. 299]
 let okCodes = [300 .. 399]
 let clientErrorCodes = [400 .. 499]
 let serverErrorCodes = [500 .. 599]
-
-let getStatus url = 
-    try
-        let response = Http.Request(url, silentHttpErrors = true)
-        Some response.StatusCode
-    with :? System.Net.WebException as ex -> printfn "There was an error creating the request: %s!" ex.Message; None
 
 [<EntryPoint>]
 let main arg =
@@ -19,7 +12,7 @@ let main arg =
     match arg with 
     | [|first|] -> 
 
-        let statusCode = getStatus first        
+        let statusCode = GetStatus first        
 
         match statusCode with
         | Some status -> 

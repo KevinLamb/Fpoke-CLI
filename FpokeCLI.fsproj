@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Modules\SMTP.fs" />
     <Compile Include="Modules\Poke.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

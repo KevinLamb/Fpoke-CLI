@@ -1,17 +1,22 @@
 ﻿namespace Fpoke.Modules
 
+open FSharp.Data
 open System.Net.Mail
 
 module SMTP = 
-    let server = "smtp.mailtrap.io" 
-    let sender = ""
-    let username = ""
-    let password = ""
-    let port = 587
+    type SmtpConnection = XmlProvider<"./Connections/SmtpConnection.xml">
+
+    let smtpConnection = SmtpConnection.Parse("./Connections/SmtpConnection.xml")
+
+    let server = smtpConnection.Host.XElement.Value
+    let sender = smtpConnection.Sender.XElement.Value
+    let username = smtpConnection.Username.XElement.Value
+    let password = smtpConnection.Password.XElement.Value
+    let port = smtpConnection.Port
 
     let SendMail email message =
         let msg = 
-            new MailMessage(sender, email, "Fpoke - Report", "<h1>" + message + "</h1>")
+            new MailMessage(sender, email, "Fpoke - Report", "<h1>F# Report</h1> <p>" + message + "</p>")
 
         msg.IsBodyHtml <- true
 

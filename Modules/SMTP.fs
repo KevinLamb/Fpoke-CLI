@@ -8,10 +8,10 @@ module SMTP =
 
     let smtpConnection = SmtpConnection.Parse("./Connections/SmtpConnection.xml")
 
-    let server = smtpConnection.Host.XElement.Value
-    let sender = smtpConnection.Sender.XElement.Value
-    let username = smtpConnection.Username.XElement.Value
-    let password = smtpConnection.Password.XElement.Value
+    let server = smtpConnection.Host
+    let sender = smtpConnection.Sender
+    let username = smtpConnection.Username
+    let password = smtpConnection.Password
     let port = smtpConnection.Port
 
     let SendMail email message =

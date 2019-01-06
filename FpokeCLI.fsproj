@@ -11,16 +11,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="Connections\SmtpConnection.xml" />
     <Compile Include="Modules\SMTP.fs" />
     <Compile Include="Modules\Poke.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Connections\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="Argu" Version="5.2.0" />
     <PackageReference Include="FSharp.Data" Version="3.0.0" />
   </ItemGroup>
 

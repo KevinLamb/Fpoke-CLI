@@ -2,7 +2,7 @@
   "profiles": {
     "FpokeCLI": {
       "commandName": "Project",
-      "commandLineArgs": "https://google.com"
+      "commandLineArgs": "--url https://google.com"
     }
   }
 }

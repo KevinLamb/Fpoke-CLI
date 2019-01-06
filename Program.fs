@@ -1,6 +1,18 @@
-﻿open System
+﻿open Argu
 open Fpoke.Modules.Poke
 open Fpoke.Modules.SMTP
+open System
+
+type FpokeArguments =
+    | URL of url:string
+    | Email of email:string
+    with
+        interface IArgParserTemplate with
+            member fpoke.Usage =
+                match fpoke with
+                | URL _ -> "The URL of the site you're checking."
+                | Email _ -> "The email you want to send a report to."
+
 
 let infoCodes = [100 .. 199]
 let goodCodes = [200 .. 299]
@@ -11,45 +23,20 @@ let serverErrorCodes = [500 .. 599]
 [<EntryPoint>]
 let main arg =
 
-    match arg with
-    | a when Array.contains "/email" a-> 
+    let argParser = ArgumentParser.Create<FpokeArguments>(programName = "fpoke")
 
-        let statusCode = GetStatus arg.[0]
-
-        match statusCode with
-        | Some status -> 
-                    match status with
-                        | s when List.contains s infoCodes = true -> 
-                            printfn "The site is UP! \r\nHTTP Status: %i" status
-                            let message =  String.Concat("<h1>The site is UP! \r\nHTTP Status: ", status, "</h1>")
-                            SendMail arg.[2] message
-
-                        | s when List.contains s goodCodes = true -> 
-                            printfn "The site is UP! \r\nHTTP Status: %i" status
-                            let message =  String.Concat("<h1>The site is UP! \r\nHTTP Status: ", status, "</h1>")
-                            SendMail arg.[2] message
-
-                        | s when List.contains s okCodes = true -> 
-                            printfn "The site is UP! \r\nHTTP Status: %i" status
-                            let message =  String.Concat("<h1>The site is UP! \r\nHTTP Status: ", status, "</h1>")
-                            SendMail arg.[2] message
-
-                        | s when List.contains s clientErrorCodes = true -> 
-                            printfn "Page is not found or page is down... \r\nHTTP Status: %i" status
-                            let message =  String.Concat("<h1>Page is not found or page is down... \r\nHTTP Status: ", status, "</h1>")
-                            SendMail arg.[2] message
-
-                        | s when List.contains s serverErrorCodes = true -> 
-                            printfn "SERVER ERROR: Site is DOWN! \r\nHTTP Status: %i" status
-                            let message =  String.Concat("<h1>SERVER ERROR: Site is DOWN! \r\nHTTP Status: ", status, "</h1>")
-                            SendMail arg.[2] message
-
-                        | _ -> printfn "An error occurred while getting status..."
-
-        | None -> printfn "How to use: \"fpoke http://your-url.com\""
+    let results = argParser.ParseCommandLine(arg)
     
-    | [|first|]-> 
-        let statusCode = GetStatus first
+    let containsEmail = results.Contains Email
+
+    let fpokeUsage = argParser.PrintUsage()
+    
+    match results.Contains URL with
+    | true -> 
+
+        let url = results.GetResult URL
+
+        let statusCode = GetStatus url
 
         match statusCode with
         | Some status -> 
@@ -57,21 +44,46 @@ let main arg =
                         | s when List.contains s infoCodes = true -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
 
+                            if (containsEmail) then
+                                let email = results.GetResult Email
+                                let message =  String.Concat("The site is UP! \r\nHTTP Status: ", status)
+                                SendMail email message
+
                         | s when List.contains s goodCodes = true -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
+
+                            if (containsEmail) then
+                                let email = results.GetResult Email
+                                let message =  String.Concat("The site is UP! \r\nHTTP Status: ", status)
+                                SendMail email message
 
                         | s when List.contains s okCodes = true -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
 
+                            if (containsEmail) then
+                                let email = results.GetResult Email
+                                let message =  String.Concat("The site is UP! \r\nHTTP Status: ", status)
+                                SendMail email message
+
                         | s when List.contains s clientErrorCodes = true -> 
                             printfn "Page is not found or page is down... \r\nHTTP Status: %i" status
+
+                            if (containsEmail) then
+                                let email = results.GetResult Email
+                                let message =  String.Concat("Page is not found or page is down... \r\nHTTP Status: ", status)
+                                SendMail email message
 
                         | s when List.contains s serverErrorCodes = true -> 
                             printfn "SERVER ERROR: Site is DOWN! \r\nHTTP Status: %i" status
 
+                            if (containsEmail) then
+                                let email = results.GetResult Email
+                                let message =  String.Concat("SERVER ERROR: Site is DOWN! \r\nHTTP Status: ", status)
+                                SendMail email message
+
                         | _ -> printfn "An error occurred while getting status..."
 
-        | None -> printfn "How to use: \"fpoke http://your-url.com\""
-    | _ -> printfn "How to use: \"fpoke http://your-url.com\""
+        | None -> printfn "%s" fpokeUsage
+    | _ -> printfn "%s" fpokeUsage
     
     0 

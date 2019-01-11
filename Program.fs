@@ -4,14 +4,14 @@ open Fpoke.Modules.SMTP
 open System
 
 type FpokeArguments =
-    | URL of url:string
-    | Email of email:string
+    | [<MainCommand>] URL of url:string
+    | [<AltCommandLine("-email")>] Email of email:string
     with
         interface IArgParserTemplate with
             member fpoke.Usage =
                 match fpoke with
                 | URL _ -> "The URL of the site you're checking."
-                | Email _ -> "The email you want to send a report to."
+                | Email _ -> "The email you want to send a report to. (Make sure to set up SMTP connection)"
 
 
 let infoCodes = [100 .. 199]

@@ -4,15 +4,15 @@ open FSharp.Data
 open System.Net.Mail
 
 module SMTP = 
-    type SmtpConnection = XmlProvider<"./Connections/SmtpConnection.xml">
+    type SmtpConnection = XmlProvider<"<connection><host></host><sender></sender><username></username><password></password><port></port></connection>">
 
     let smtpConnection = SmtpConnection.Parse("./Connections/SmtpConnection.xml")
 
-    let server = smtpConnection.Host
-    let sender = smtpConnection.Sender
-    let username = smtpConnection.Username
-    let password = smtpConnection.Password
-    let port = smtpConnection.Port
+    let server = smtpConnection.Host.XElement.Value
+    let sender = smtpConnection.Sender.XElement.Value
+    let username = smtpConnection.Username.XElement.Value
+    let password = smtpConnection.Password.XElement.Value
+    let port = smtpConnection.Port.XElement.Value |> int 
 
     let SendMail email message =
         let msg = 

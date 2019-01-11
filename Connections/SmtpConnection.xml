@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <connection>
   <host></host>
-  <port>25</port>
+  <port>465</port>
   <sender></sender>
   <username></username>
   <password></password>

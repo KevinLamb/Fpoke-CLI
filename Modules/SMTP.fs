@@ -1,12 +1,15 @@
 ﻿namespace Fpoke.Modules
 
 open FSharp.Data
+open System
 open System.Net.Mail
 
 module SMTP = 
-    type SmtpConnection = XmlProvider<"<connection><host></host><sender></sender><username></username><password></password><port></port></connection>">
-
-    let smtpConnection = SmtpConnection.Parse("./Connections/SmtpConnection.xml")
+    type SmtpConnection = XmlProvider<"""<connection><host></host><sender></sender><username></username><password></password><port></port></connection>""">
+    
+    let smtpConfigPath = Environment.CurrentDirectory + "\\Connections\\SmtpConnection.xml"
+    
+    let smtpConnection = SmtpConnection.Load(smtpConfigPath)
 
     let server = smtpConnection.Host.XElement.Value
     let sender = smtpConnection.Sender.XElement.Value

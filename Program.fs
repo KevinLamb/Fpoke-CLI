@@ -46,7 +46,7 @@ let main arg =
 
                             if (containsEmail) then
                                 let email = results.GetResult Email
-                                let message =  String.Concat("The site is UP! \r\nHTTP Status: ", status)
+                                let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message
 
                         | s when List.contains s goodCodes = true -> 
@@ -54,7 +54,7 @@ let main arg =
 
                             if (containsEmail) then
                                 let email = results.GetResult Email
-                                let message =  String.Concat("The site is UP! \r\nHTTP Status: ", status)
+                                let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message
 
                         | s when List.contains s okCodes = true -> 
@@ -62,7 +62,7 @@ let main arg =
 
                             if (containsEmail) then
                                 let email = results.GetResult Email
-                                let message =  String.Concat("The site is UP! \r\nHTTP Status: ", status)
+                                let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message
 
                         | s when List.contains s clientErrorCodes = true -> 
@@ -70,7 +70,7 @@ let main arg =
 
                             if (containsEmail) then
                                 let email = results.GetResult Email
-                                let message =  String.Concat("Page is not found or page is down... \r\nHTTP Status: ", status)
+                                let message =  String.Concat("The page (" + url + ") is not found or page is down... \r\nHTTP Status: ", status)
                                 SendMail email message
 
                         | s when List.contains s serverErrorCodes = true -> 
@@ -78,7 +78,7 @@ let main arg =
 
                             if (containsEmail) then
                                 let email = results.GetResult Email
-                                let message =  String.Concat("SERVER ERROR: Site is DOWN! \r\nHTTP Status: ", status)
+                                let message =  String.Concat("SERVER ERROR: The site (" + url + ") is DOWN! \r\nHTTP Status: ", status)
                                 SendMail email message
 
                         | _ -> printfn "An error occurred while getting status..."

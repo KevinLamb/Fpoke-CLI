@@ -16,7 +16,7 @@ type FpokeArguments =
 
 let infoCodes = [100 .. 199]
 let goodCodes = [200 .. 299]
-let okCodes = [300 .. 399]
+let redirectCodes = [300 .. 399]
 let clientErrorCodes = [400 .. 499]
 let serverErrorCodes = [500 .. 599]
 
@@ -57,7 +57,7 @@ let main arg =
                                 let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message
 
-                        | s when List.contains s okCodes = true -> 
+                        | s when List.contains s redirectCodes = true -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
 
                             if (containsEmail) then

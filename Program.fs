@@ -6,12 +6,14 @@ open System
 type FpokeArguments =
     | [<MainCommand>] URL of url:string
     | [<AltCommandLine("-email")>] Email of email:string
+    | [<AltCommandLine("-error")>] ErrorOnly
     with
         interface IArgParserTemplate with
             member fpoke.Usage =
                 match fpoke with
                 | URL _ -> "The URL of the site you're checking."
                 | Email _ -> "The email you want to send a report to. (Make sure to set up SMTP connection)"
+                | ErrorOnly _ -> "A setting for only sending an email report upon error codes."
 
 
 let infoCodes = [100 .. 199]
@@ -28,6 +30,7 @@ let main arg =
     let results = argParser.ParseCommandLine(arg)
     
     let containsEmail = results.Contains Email
+    let errorOnly = results.Contains ErrorOnly
 
     let fpokeUsage = argParser.PrintUsage()
     
@@ -44,7 +47,7 @@ let main arg =
                         | s when List.contains s infoCodes = true -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
 
-                            if (containsEmail) then
+                            if (containsEmail && not errorOnly) then
                                 let email = results.GetResult Email
                                 let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message
@@ -52,7 +55,7 @@ let main arg =
                         | s when List.contains s goodCodes = true -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
 
-                            if (containsEmail) then
+                            if (containsEmail && not errorOnly) then
                                 let email = results.GetResult Email
                                 let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message
@@ -60,7 +63,7 @@ let main arg =
                         | s when List.contains s redirectCodes = true -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
 
-                            if (containsEmail) then
+                            if (containsEmail && not errorOnly) then
                                 let email = results.GetResult Email
                                 let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message

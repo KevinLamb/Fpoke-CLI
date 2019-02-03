@@ -40,6 +40,7 @@ let main arg =
     match results.Contains URL with
     | true -> 
 
+        //Check Status and send email
         let url = results.GetResult URL
 
         let statusCode = GetStatus url
@@ -57,16 +58,6 @@ let main arg =
 
                         | s when List.contains s goodCodes = true ->
                             printfn "The site is UP! \r\nHTTP Status: %i" status
-
-                            if(portCheck) then
-                                let port = results.GetResult Port
-
-                                let portConnected = GetPortStatus(url, port)
-
-                                if(portConnected) then
-                                    printfn "Port %i is open." port
-                                else
-                                    printfn "Port %i is closed." port
 
                             if (containsEmail && not errorOnly) then
                                 let email = results.GetResult Email
@@ -100,6 +91,18 @@ let main arg =
                         | _ -> printfn "An error occurred while getting status..."
 
         | None -> printfn "%s" fpokeUsage
+
+        //Check port
+        if(portCheck) then
+            let port = results.GetResult Port
+
+            let portConnected = GetPortStatus(url, port)
+
+            if(portConnected) then
+                printfn "Port %i is open." port
+            else
+                printfn "Port %i is closed." port
+
     | _ -> printfn "%s" fpokeUsage
     
     0 

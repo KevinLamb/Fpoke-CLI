@@ -7,6 +7,7 @@ type FpokeArguments =
     | [<MainCommand>] URL of url:string
     | [<AltCommandLine("-email")>] Email of email:string
     | [<AltCommandLine("-error")>] ErrorOnly
+    | [<AltCommandLine("-p")>] Port of port:int
     with
         interface IArgParserTemplate with
             member fpoke.Usage =
@@ -14,6 +15,7 @@ type FpokeArguments =
                 | URL _ -> "The URL of the site you're checking."
                 | Email _ -> "The email you want to send a report to. (Make sure to set up SMTP connection)"
                 | ErrorOnly _ -> "A setting for only sending an email report upon error codes."
+                | Port _ -> "A setting for only sending an email report upon error codes."
 
 
 let infoCodes = [100 .. 199]
@@ -31,6 +33,7 @@ let main arg =
     
     let containsEmail = results.Contains Email
     let errorOnly = results.Contains ErrorOnly
+    let portCheck = results.Contains Port
 
     let fpokeUsage = argParser.PrintUsage()
     
@@ -52,8 +55,18 @@ let main arg =
                                 let message =  String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
                                 SendMail email message
 
-                        | s when List.contains s goodCodes = true -> 
+                        | s when List.contains s goodCodes = true ->
                             printfn "The site is UP! \r\nHTTP Status: %i" status
+
+                            if(portCheck) then
+                                let port = results.GetResult Port
+
+                                let portConnected = GetPortStatus(url, port)
+
+                                if(portConnected) then
+                                    printfn "Port %i is open." port
+                                else
+                                    printfn "Port %i is closed." port
 
                             if (containsEmail && not errorOnly) then
                                 let email = results.GetResult Email

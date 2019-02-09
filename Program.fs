@@ -15,7 +15,7 @@ type FpokeArguments =
                 | URL _ -> "The URL of the site you're checking."
                 | Email _ -> "The email you want to send a report to. (Make sure to set up SMTP connection)"
                 | ErrorOnly _ -> "A setting for only sending an email report upon error codes."
-                | Port _ -> "A setting for only sending an email report upon error codes."
+                | Port _ -> "The port you want to ping on the site's server."
 
 
 let infoCodes = [100 .. 199]

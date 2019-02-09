@@ -8,8 +8,6 @@ open System.Net
 
 module Poke =
     
-    
-    
     let GetStatus url = 
         try
             let response = Http.Request(url, silentHttpErrors = true)

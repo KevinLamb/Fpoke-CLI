@@ -82,10 +82,10 @@ let main arg =
 
             if(portConnected) then
                 printfn "Port %i is open." port
-                message <- message + String.Concat("Port %i is open.", port)
+                message <- message + String.Concat(" \r\nPort %i is open.", port)
             else
                 printfn "Port %i is closed." port
-                message <- message + String.Concat("Port %i is closed.", port)
+                message <- message + String.Concat(" \r\nPort %i is closed.", port)
         
         if (containsEmail && not errorOnly) then
             let email = results.GetResult Email

@@ -11,3 +11,8 @@ You can also send an email with the result by adding the -email parameter. You'l
 
 Example:
 `fpoke https://google.com/ -email youremail@domain.com`
+
+You can check an open port with the -p parameter.
+
+Example:
+`fpoke https://google.com/ -p 80`

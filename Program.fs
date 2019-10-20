@@ -50,23 +50,23 @@ let main arg =
         match statusCode with
         | Some status -> 
                     match status with
-                        | s when List.contains s infoCodes = true -> 
+                        | stat when List.contains stat infoCodes -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
                             message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
 
-                        | s when List.contains s goodCodes = true ->
+                        | stat when List.contains stat goodCodes ->
                             printfn "The site is UP! \r\nHTTP Status: %i" status
                             message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)        
 
-                        | s when List.contains s redirectCodes = true -> 
+                        | stat when List.contains stat redirectCodes -> 
                             printfn "The site is UP! \r\nHTTP Status: %i" status
                             message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
 
-                        | s when List.contains s clientErrorCodes = true -> 
+                        | stat when List.contains stat clientErrorCodes -> 
                             printfn "Page is not found or page is down... \r\nHTTP Status: %i" status
                             message <- String.Concat("The page (" + url + ") is not found or page is down... \r\nHTTP Status: ", status)
 
-                        | s when List.contains s serverErrorCodes = true -> 
+                        | stat when List.contains stat serverErrorCodes -> 
                             printfn "SERVER ERROR: Site is DOWN! \r\nHTTP Status: %i" status
                             message <- String.Concat("SERVER ERROR: The site (" + url + ") is DOWN! \r\nHTTP Status: ", status)
                 

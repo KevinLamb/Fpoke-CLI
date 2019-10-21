@@ -5,9 +5,10 @@ open System
 open System.IO
 open System.Net.Sockets
 open System.Net
+open System.Collections.Generic
 
 module Poke =
-    
+
     let GetStatus url = 
         try
             let response = Http.Request(url, silentHttpErrors = true)
@@ -35,3 +36,72 @@ module Poke =
             with
             | _ -> (); false
         connected
+    
+    let Advice = dict[
+        200, "Received an OK response from the server.";
+    
+        //300
+        300, "Double check for typos in the URL, this is a redirect response from the server.";
+
+        301, "This is a permanent redirect. You might want to check the resulting URL.";
+
+        302, "This is a redirect to temporary content. Usually this is nothing to worry about.";
+
+        303, "This is usually a redirect to see newer content. Usually this is nothing to worry about.";
+
+        304, "This is a redirect, usually to cached content. Usually nothing to worry about.";
+
+        307, "This is a temporary redirect. Usually nothing to worry about.";
+
+        308, "This is a permanent redirect. You might want to check the resulting URL.";
+
+        //400
+        400, "The URL cannot be parsed by the server resulting in a bad request. Check the URL provided.";
+
+        401, "Authentication is needed to connect to the server.";
+
+        402, "A payment is required to connect to the server.";
+
+        403, "The link provided is forbidden by the server. Check the access of the directory / web server settings.";
+
+        404, "The server can not find the content connected to the provided link. Check the link to make sure it's correct.";
+
+        405, "The server does not support the request method used by fpoke. Please check the server and URL.";
+
+        406, "The server will not produce a response with the acceptable values. Check the server settings or follow the URL to see if there is a list of acceptable values provided.";
+
+        407, "The link leads to a proxy that requires authentication.";
+
+        408, "The request timed out... the server might be down.";
+
+        409, "There was a conflict with the request to the server. Check the state of the server.";
+
+        410, "The URL provided leads to content that no longer exists. Check the URL provided and the server it connects to.";
+
+        411, "The server needs a defined Content-Length to return a response. Check the server and fix the settings.";
+
+        412, "The request failed due to the type of request. Check that a the server needs a method other than GET to access the URL.";
+
+        413, "The payload by fpoke was too large for the server's limits. Check the server's configurations.";
+
+        414, "The URL is too long for the server. Check the link character length and compare to the server's acceptable URL limits";
+
+        415, "The media type is not supported by the server. Check the server's configurations.";
+
+        416, "The server can not serve the requested range in the Range header value. Check the server's configuration.";
+
+        417, "The expectation in fpoke's response could not be met. Check the server's configuration.";
+
+        418, "The server is a teapot. Make sure your URL is going to a valid coffee pot.";
+
+        //500
+        500, "There's a server side error. Check the server for errors.";
+
+        501, "The server doesn't have the functionality to complete the request. Check the server for errors.";
+
+        502, "The server is failing while acting as a proxy or gateway. Check the servers for errors.";
+
+        503, "The server can not handle the request and service is unavailable. Check the server for errors.";
+
+        504, "The server acting as a gateway or proxy did not get a response in time. Check the servers related to the URL.";
+    ]

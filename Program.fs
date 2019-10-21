@@ -16,7 +16,7 @@ type FpokeArguments =
                 | Email _ -> "The email you want to send a report to. (Make sure to set up SMTP connection)"
                 | ErrorOnly _ -> "A setting for only sending an email report upon error codes."
                 | Port _ -> "The port you want to ping on the site's server."
-
+                
 
 let infoCodes = [100 .. 199]
 let goodCodes = [200 .. 299]
@@ -65,12 +65,15 @@ let main arg =
                         | stat when List.contains stat clientErrorCodes -> 
                             printfn "Page is not found or page is down... \r\nHTTP Status: %i" status
                             message <- String.Concat("The page (" + url + ") is not found or page is down... \r\nHTTP Status: ", status)
-
+                            
                         | stat when List.contains stat serverErrorCodes -> 
                             printfn "SERVER ERROR: Site is DOWN! \r\nHTTP Status: %i" status
                             message <- String.Concat("SERVER ERROR: The site (" + url + ") is DOWN! \r\nHTTP Status: ", status)
-                
+                                
                         | _ -> printfn "An error occurred while getting status..."
+
+                    printfn "Description: %s" Advice.[status]
+                    message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
 
         | None -> printfn "%s" fpokeUsage
 
@@ -90,6 +93,7 @@ let main arg =
         if (containsEmail && not errorOnly) then
             let email = results.GetResult Email
             SendMail email message
+            
     | _ -> printfn "%s" fpokeUsage
     
     0 

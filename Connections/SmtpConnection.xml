@@ -5,4 +5,5 @@
   <sender></sender>
   <username></username>
   <password></password>
+  <enablessl>true</enablessl>
 </connection>

@@ -92,8 +92,9 @@ let main arg =
         
         if (containsEmail && not errorOnly) then
             let email = results.GetResult Email
+            message <- message.Replace("\r\n", "</p><p>")
             SendMail email message
-            
+
     | _ -> printfn "%s" fpokeUsage
     
     0 

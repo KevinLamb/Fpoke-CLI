@@ -5,7 +5,7 @@ open System
 open System.Net.Mail
 
 module SMTP = 
-    type SmtpConnection = XmlProvider<"""<connection><host></host><sender></sender><username></username><password></password><port></port></connection>""">
+    type SmtpConnection = XmlProvider<"""<connection><host></host><sender></sender><username></username><password></password><port></port><enablessl></enablessl></connection>""">
     
     let smtpConfigPath = Environment.CurrentDirectory + "\\Connections\\SmtpConnection.xml"
     
@@ -17,14 +17,17 @@ module SMTP =
     let password = smtpConnection.Password.XElement.Value
     let port = smtpConnection.Port.XElement.Value |> int 
 
+    //Default to true if not specified
+    let enableSsl = smtpConnection.Enablessl.XElement.Value <> "false"
+
     let SendMail email message =
         let msg = 
-            new MailMessage(sender, email, "Fpoke - Report", "<h1>F# Report</h1> <p>" + message + "</p>")
+            new MailMessage(sender, email, "Fpoke - Report", "<h1>Fpoke Report</h1> <p>" + message + "</p>")
 
         msg.IsBodyHtml <- true
 
         let client = new SmtpClient(server, port)
-        client.EnableSsl <- true
+        client.EnableSsl <- enableSsl
         client.Credentials <- System.Net.NetworkCredential(username, password)
         client.SendCompleted |> Observable.add(fun e -> 
             let msg = e.UserState :?> MailMessage

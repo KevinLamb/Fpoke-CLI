@@ -51,32 +51,28 @@ let main arg =
         | Some status -> 
                     match status with
                         | stat when List.contains stat infoCodes -> 
-                            printfn "The site is UP! \r\nHTTP Status: %i" status
                             message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
 
                         | stat when List.contains stat goodCodes ->
-                            printfn "The site is UP! \r\nHTTP Status: %i" status
                             message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)        
 
                         | stat when List.contains stat redirectCodes -> 
-                            printfn "The site is UP! \r\nHTTP Status: %i" status
                             message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
 
                         | stat when List.contains stat clientErrorCodes -> 
-                            printfn "Page is not found or page is down... \r\nHTTP Status: %i" status
                             message <- String.Concat("The page (" + url + ") is not found or page is down... \r\nHTTP Status: ", status)
                             
                         | stat when List.contains stat serverErrorCodes -> 
-                            printfn "SERVER ERROR: Site is DOWN! \r\nHTTP Status: %i" status
                             message <- String.Concat("SERVER ERROR: The site (" + url + ") is DOWN! \r\nHTTP Status: ", status)
                                 
                         | _ -> printfn "An error occurred while getting status..."
 
-                    printfn "Description: %s" Advice.[status]
                     message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
 
-        | None -> printfn "%s" fpokeUsage
+        | None -> 
+            message <- "SERVER ERROR: Site is DOWN! \r\nUnable to connect to the server."
 
+        
         //Check port
         if(portCheck) then
             let port = results.GetResult Port
@@ -84,12 +80,13 @@ let main arg =
             let portConnected = GetPortStatus(url, port)
 
             if(portConnected) then
-                printfn "Port %i is open." port
-                message <- message + String.Concat(" \r\nPort %i is open.", port)
+                message <- message + String.Concat(" \r\nPort ", port, " is open.")
             else
-                printfn "Port %i is closed." port
-                message <- message + String.Concat(" \r\nPort %i is closed.", port)
+                message <- message + String.Concat(" \r\nPort ", port, " is closed.")
         
+        //Print message diagonostics        
+        printf "%s \r\n" message
+
         if (containsEmail && not errorOnly) then
             let email = results.GetResult Email
             message <- message.Replace("\r\n", "</p><p>")

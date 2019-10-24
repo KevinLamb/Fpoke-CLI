@@ -22,7 +22,13 @@ module SMTP =
 
     let SendMail email message =
         let msg = 
-            new MailMessage(sender, email, "Fpoke - Report", "<h1>Fpoke Report</h1> <p>" + message + "</p>")
+            new MailMessage(sender, email, 
+                "Fpoke - Report", "<h1>Fpoke Report</h1> <p>" + message + "</p> 
+                <style>
+                    h1, p {
+                        font-family: Arial, sans-serif;
+                    }
+                </style>")
 
         msg.IsBodyHtml <- true
 
@@ -41,4 +47,4 @@ module SMTP =
         
         client.Send(msg)
 
-        printfn "Report sent to email"
+        printfn "Report sent to email"      

@@ -38,8 +38,30 @@ module Poke =
         connected
     
     let Advice = dict[
+        //100
+        100, "Continue to a proper request. Manually verify that the content does load.";
+
+        101, "Switching Protocols";
+
+        102, "Processing";
+
+        103, "This is a response to load things earlier than when the server is ready to process the main content."; 
+
+        //200
         200, "Received an OK response from the server.";
-    
+
+        201, "Created a resource during the successful request";
+
+        202, "The request was accepted but not acted upon";
+
+        203, "The request has been transformed by a proxy to a 200 request.";
+
+        204, "The connection was successfully but there is no need to go away from the previous request.";
+
+        205, "The server wants the client to refresh but the connection was successful.";
+
+        206, "The server responded with partial content.";
+
         //300
         300, "Double check for typos in the URL, this is a redirect response from the server.";
 

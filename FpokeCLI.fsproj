@@ -1,25 +1,20 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <AssemblyName>fpoke</AssemblyName>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <AssemblyName>fpoke</AssemblyName>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
-    <Content Include="Connections\SmtpConnection.xml" />
-    <Compile Include="Modules\SMTP.fs" />
-    <Compile Include="Modules\Poke.fs" />
+    <Content Include="Connections/SmtpConnection.xml" />
+    <Compile Include="Modules/Poke.fs" />
+    <Compile Include="Modules/SMTP.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Argu" Version="5.2.0" />
     <PackageReference Include="FSharp.Data" Version="3.0.0" />
   </ItemGroup>
-
 </Project>

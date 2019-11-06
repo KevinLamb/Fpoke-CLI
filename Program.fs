@@ -51,13 +51,16 @@ let main arg =
         | Some status -> 
                     match status with
                         | stat when List.contains stat infoCodes -> 
-                            message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
+                            if(not errorOnly) then
+                                message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
 
                         | stat when List.contains stat goodCodes ->
-                            message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)        
+                            if(not errorOnly) then
+                                message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)        
 
                         | stat when List.contains stat redirectCodes -> 
-                            message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
+                            if(not errorOnly) then
+                                message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
 
                         | stat when List.contains stat clientErrorCodes -> 
                             message <- String.Concat("The page (" + url + ") is not found or page is down... \r\nHTTP Status: ", status)
@@ -67,7 +70,10 @@ let main arg =
                                 
                         | _ -> printfn "An error occurred while getting status..."
 
-                    message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
+                    if(not errorOnly) then
+                        message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
+                    else if(List.contains status serverErrorCodes || List.contains status clientErrorCodes) then
+                        message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
 
         | None -> 
             message <- "SERVER ERROR: Site is DOWN! \r\nUnable to connect to the server."

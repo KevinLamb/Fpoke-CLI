@@ -28,6 +28,7 @@ let serverErrorCodes = [500 .. 599]
 let main arg =
 
     let mutable message = ""
+    let mutable error = false
 
     let argParser = ArgumentParser.Create<FpokeArguments>(programName = "fpoke")
 
@@ -64,15 +65,15 @@ let main arg =
 
                         | stat when List.contains stat clientErrorCodes -> 
                             message <- String.Concat("The page (" + url + ") is not found or page is down... \r\nHTTP Status: ", status)
-                            
+                            error <- true 
+
                         | stat when List.contains stat serverErrorCodes -> 
                             message <- String.Concat("SERVER ERROR: The site (" + url + ") is DOWN! \r\nHTTP Status: ", status)
-                                
+                            error <- true    
+
                         | _ -> printfn "An error occurred while getting status..."
 
-                    if(not errorOnly) then
-                        message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
-                    else if(List.contains status serverErrorCodes || List.contains status clientErrorCodes) then
+                    if(not errorOnly || error) then
                         message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
 
         | None -> 
@@ -93,10 +94,13 @@ let main arg =
         //Print message diagonostics        
         printf "%s \r\n" message
 
-        if (containsEmail && not errorOnly) then
+        if (containsEmail) then
             let email = results.GetResult Email
+
             message <- message.Replace("\r\n", "</p><p>")
-            SendMail email message
+
+            if(not errorOnly || error) then
+                SendMail email message error
 
     | _ -> printfn "%s" fpokeUsage
     

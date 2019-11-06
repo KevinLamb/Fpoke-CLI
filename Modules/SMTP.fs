@@ -20,7 +20,7 @@ module SMTP =
     //Default to true if not specified
     let enableSsl = smtpConnection.Enablessl.XElement.Value <> "false"
 
-    let SendMail email message =
+    let SendMail email message important =
         let msg = 
             new MailMessage(sender, email, 
                 "Fpoke - Report", "<h1>Fpoke Report</h1> <p>" + message + "</p> 
@@ -31,6 +31,10 @@ module SMTP =
                 </style>")
 
         msg.IsBodyHtml <- true
+
+        //Check if we should make this as an important email (aka errors)
+        if(important) then
+            msg.Priority <- MailPriority.High
 
         let client = new SmtpClient(server, port)
         client.EnableSsl <- enableSsl

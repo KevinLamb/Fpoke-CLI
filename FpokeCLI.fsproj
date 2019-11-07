@@ -8,7 +8,7 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="Connections/SmtpConnection.xml" />
+    <Content Include="Config/SmtpConnection.xml" />
     <Compile Include="Modules/Poke.fs" />
     <Compile Include="Modules/SMTP.fs" />
     <Compile Include="Program.fs" />

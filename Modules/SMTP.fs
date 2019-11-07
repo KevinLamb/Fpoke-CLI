@@ -7,7 +7,7 @@ open System.Net.Mail
 module SMTP = 
     type SmtpConnection = XmlProvider<"""<connection><host></host><sender></sender><username></username><password></password><port></port><enablessl></enablessl></connection>""">
     
-    let smtpConfigPath = Environment.CurrentDirectory + "\\Connections\\SmtpConnection.xml"
+    let smtpConfigPath = Environment.CurrentDirectory + "\\Config\\SmtpConnection.xml"
     
     let smtpConnection = SmtpConnection.Load(smtpConfigPath)
 

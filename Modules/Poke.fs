@@ -9,34 +9,12 @@ open System.Collections.Generic
 
 module Poke =
 
-    let GetStatus url = 
-        try
-            let response = Http.Request(url, silentHttpErrors = true)
-            Some response.StatusCode
-        with :? System.Net.WebException as ex -> printfn "There was an error creating the request: %s!" ex.Message; None
+    let infoCodes = [100 .. 199]
+    let goodCodes = [200 .. 299]
+    let redirectCodes = [300 .. 399]
+    let clientErrorCodes = [400 .. 499]
+    let serverErrorCodes = [500 .. 599]
 
-    let GetPortStatus (url: string, port: int): bool = 
-
-        let request = WebRequest.Create(url)
-        use response = request.GetResponse()
-
-        let host = response.ResponseUri.Host
-
-        let connected =
-            try
-                use client = new TcpClient()
-                let result = client.BeginConnect(host, port, null, null)
-                let success = result.AsyncWaitHandle.WaitOne(3000)
-
-                match success with
-                | false -> false
-                | true ->
-                       client.EndConnect(result)
-                       true
-            with
-            | _ -> (); false
-        connected
-    
     let Advice = dict[
         //100
         100, "Continue to a proper request. Manually verify that the content does load.";
@@ -127,3 +105,72 @@ module Poke =
 
         504, "The server acting as a gateway or proxy did not get a response in time. Check the servers related to the URL.";
     ]
+
+    let GetStatus url = 
+        try
+            let response = Http.Request(url, silentHttpErrors = true)
+            Some response.StatusCode
+        with :? System.Net.WebException as ex -> printfn "There was an error creating the request: %s!" ex.Message; None
+
+    let GetPortStatus (url: string, port: int): bool = 
+
+        let request = WebRequest.Create(url)
+        use response = request.GetResponse()
+
+        let host = response.ResponseUri.Host
+
+        let connected =
+            try
+                use client = new TcpClient()
+                let result = client.BeginConnect(host, port, null, null)
+                let success = result.AsyncWaitHandle.WaitOne(3000)
+
+                match success with
+                | false -> false
+                | true ->
+                       client.EndConnect(result)
+                       true
+            with
+            | _ -> (); false
+        connected
+    
+    let CreateResponseMessage url status : string = 
+        let mutable message = ""
+
+        match status with
+            | stat when List.contains stat infoCodes -> 
+                    message <- sprintf "The site (%s) is UP! \r\nHTTP Status: %i" url status
+
+            | stat when List.contains stat goodCodes ->
+                    message <- sprintf "The site (%s) is UP! \r\nHTTP Status: %i" url status       
+
+            | stat when List.contains stat redirectCodes -> 
+                    message <- sprintf "The site (%s) is UP! \r\nHTTP Status: %i" url status 
+
+            | stat when List.contains stat clientErrorCodes -> 
+                message <- sprintf "The page (%s) is not found or page is down... \r\nHTTP Status: %i" url status 
+
+            | stat when List.contains stat serverErrorCodes -> 
+                message <- sprintf "SERVER ERROR: The site (%s) is DOWN! \r\nHTTP Status: %i" url status     
+
+            | _ -> printfn "An error occurred while getting status..."
+
+        message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
+
+        message
+    
+    let CheckError status : bool = 
+        let mutable error = false
+
+        match status with
+            | stat when List.contains stat clientErrorCodes -> 
+                error <- true
+
+            | stat when List.contains stat serverErrorCodes -> 
+                error <- true     
+            |_ ->
+                error <- false
+                
+        error
+
+    

@@ -8,6 +8,7 @@ type FpokeArguments =
     | [<AltCommandLine("-email")>] Email of email:string
     | [<AltCommandLine("-error")>] ErrorOnly
     | [<AltCommandLine("-p")>] Port of port:int
+    | [<AltCommandLine("-list")>] UrlList
     with
         interface IArgParserTemplate with
             member fpoke.Usage =
@@ -16,6 +17,7 @@ type FpokeArguments =
                 | Email _ -> "The email you want to send a report to. (Make sure to set up SMTP connection)"
                 | ErrorOnly _ -> "A setting for only sending an email report upon error codes."
                 | Port _ -> "The port you want to ping on the site's server."
+                | UrlList _ -> "Grab from the list provided in the urls.json file."
                 
 
 let infoCodes = [100 .. 199]
@@ -36,6 +38,7 @@ let main arg =
     
     let containsEmail = results.Contains Email
     let errorOnly = results.Contains ErrorOnly
+    let urlList = results.Contains UrlList
     let portCheck = results.Contains Port
 
     let fpokeUsage = argParser.PrintUsage()
@@ -50,34 +53,14 @@ let main arg =
 
         match statusCode with
         | Some status -> 
-                    match status with
-                        | stat when List.contains stat infoCodes -> 
-                            if(not errorOnly) then
-                                message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
+            error <- CheckError status
 
-                        | stat when List.contains stat goodCodes ->
-                            if(not errorOnly) then
-                                message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)        
+            if(not errorOnly || error) then
+                message <- CreateResponseMessage url status
 
-                        | stat when List.contains stat redirectCodes -> 
-                            if(not errorOnly) then
-                                message <- String.Concat("The site (" + url + ") is UP! \r\nHTTP Status: ", status)
-
-                        | stat when List.contains stat clientErrorCodes -> 
-                            message <- String.Concat("The page (" + url + ") is not found or page is down... \r\nHTTP Status: ", status)
-                            error <- true 
-
-                        | stat when List.contains stat serverErrorCodes -> 
-                            message <- String.Concat("SERVER ERROR: The site (" + url + ") is DOWN! \r\nHTTP Status: ", status)
-                            error <- true    
-
-                        | _ -> printfn "An error occurred while getting status..."
-
-                    if(not errorOnly || error) then
-                        message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
-
-        | None -> 
-            message <- "SERVER ERROR: Site is DOWN! \r\nUnable to connect to the server."
+        | None ->
+                message <- "SERVER ERROR: Site is DOWN! \r\nUnable to connect to the server."
+                
 
         
         //Check port
@@ -87,9 +70,9 @@ let main arg =
             let portConnected = GetPortStatus(url, port)
 
             if(portConnected) then
-                message <- message + String.Concat(" \r\nPort ", port, " is open.")
+                message <- message + sprintf "\r\nPort %i is open." port
             else
-                message <- message + String.Concat(" \r\nPort ", port, " is closed.")
+                message <- message + sprintf "\r\nPort %i is closed." port
         
         //Print message diagonostics        
         printf "%s \r\n" message

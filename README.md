@@ -20,3 +20,9 @@ You can check an open port with the -p parameter.
 
 Example:
 `fpoke https://google.com/ -p 80`
+
+### Respond only to errors
+If you only want a notification only when there's an error, you can use the -error parameter. This is great for automating a check to see if a website is down.
+
+Example:
+`fpoke https://google.com/ -email youremail@domain.com -error`

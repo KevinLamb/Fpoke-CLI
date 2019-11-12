@@ -159,6 +159,19 @@ module Poke =
 
         message
     
+    let CreatePortMessage url port : string = 
+        let mutable message = ""
+
+        let portConnected = GetPortStatus(url, port)
+
+        if(portConnected) then
+                message <- sprintf "\r\nPort %i is open." port
+            else
+                message <- sprintf "\r\nPort %i is closed." port
+
+        message
+        
+
     let CheckError status : bool = 
         let mutable error = false
 

@@ -19,13 +19,6 @@ type FpokeArguments =
                 | Port _ -> "The port you want to ping on the site's server."
                 | UrlList _ -> "Grab from the list provided in the urls.json file."
                 
-
-let infoCodes = [100 .. 199]
-let goodCodes = [200 .. 299]
-let redirectCodes = [300 .. 399]
-let clientErrorCodes = [400 .. 499]
-let serverErrorCodes = [500 .. 599]
-
 [<EntryPoint>]
 let main arg =
 
@@ -66,14 +59,11 @@ let main arg =
         //Check port
         if(portCheck) then
             let port = results.GetResult Port
+            
+            if(not errorOnly || error) then
+                message <- message + CreatePortMessage url port
 
-            let portConnected = GetPortStatus(url, port)
-
-            if(portConnected) then
-                message <- message + sprintf "\r\nPort %i is open." port
-            else
-                message <- message + sprintf "\r\nPort %i is closed." port
-        
+            
         //Print message diagonostics        
         printf "%s \r\n" message
 

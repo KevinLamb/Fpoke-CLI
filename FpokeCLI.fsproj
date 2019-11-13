@@ -9,8 +9,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Config/SmtpConnection.xml" />
-    <Compile Include="Modules/Poke.fs" />
     <Compile Include="Modules/SMTP.fs" />
+    <Compile Include="Modules/Poke.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,13 +8,14 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Argu" Version="5.2.0" />
+    <PackageReference Include="FSharp.Data" Version="3.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Config/SmtpConnection.xml" />
+    <Compile Include="Modules/JsonParser.fs" />
     <Compile Include="Modules/SMTP.fs" />
     <Compile Include="Modules/Poke.fs" />
     <Compile Include="Program.fs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Argu" Version="5.2.0" />
-    <PackageReference Include="FSharp.Data" Version="3.0.0" />
   </ItemGroup>
 </Project>

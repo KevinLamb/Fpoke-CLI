@@ -1,5 +1,6 @@
 ﻿open Argu
 open Fpoke.Modules.Poke
+open Fpoke.Modules.JsonParser
 
 [<EntryPoint>]
 let main arg =
@@ -12,12 +13,18 @@ let main arg =
 
     match results.Contains URL with
     | true -> 
-
         //Check Status and send email
         let url = results.GetResult URL
 
         CreateMessage url results 
 
-    | _ -> printfn "%s" fpokeUsage
+    | _ -> printfn "Url not provided..."
+
+    match results.Contains UrlList with
+    | true -> 
+        for url in ParseUrls do
+            CreateMessage url results
+
+    | _ -> printfn ""
     
     0 

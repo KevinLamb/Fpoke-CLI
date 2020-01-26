@@ -26,3 +26,9 @@ If you only want a notification only when there's an error, you can use the -err
 
 Example:
 `fpoke https://google.com/ -email youremail@domain.com -error`
+
+### Check status of all urls
+With the -list parameter, you can check the status of all urls within the urls.json file.
+
+Example:
+`fpoke -list`

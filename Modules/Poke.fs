@@ -6,6 +6,8 @@ open System.Net.Sockets
 open System.Net
 open Argu
 open Fpoke.Modules.SMTP
+open Serilog
+open Serilog.Sinks.File
 
 module Poke =
     type FpokeArguments =
@@ -24,6 +26,9 @@ module Poke =
                 | Port _ -> "The port you want to ping on the site's server."
                 | UrlList _ -> "Grab from the list provided in the urls.json file."
            
+    Log.Logger <- LoggerConfiguration()
+             .WriteTo.File("Logs\\fpoke.log")
+             .CreateLogger()
 
     let infoCodes = [100 .. 199]
     let goodCodes = [200 .. 299]
@@ -148,6 +153,7 @@ module Poke =
                        true
             with
             | _ -> (); false
+
         connected
     
     let CreateResponseMessage url status : string = 
@@ -172,6 +178,8 @@ module Poke =
             | _ -> printfn "An error occurred while getting status..."
 
         message <- message + String.Concat(" \r\nDescription: ", Advice.[status])
+
+        Log.Information(message)
 
         message
     
